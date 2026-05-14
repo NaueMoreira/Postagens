@@ -8,5 +8,11 @@
     "start": "node app.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^5.2.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
 }

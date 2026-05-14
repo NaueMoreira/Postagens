@@ -16,6 +16,7 @@ const usuarios = require("./routes/usuario");
 const passport = require('passport');
 const eAdmin = require('./helpers/eAdmin');
 require('./config/auth')(passport);
+const db = require('./config/db');
 //configurações...
     //session
     app.use(session({
@@ -50,7 +51,7 @@ require('./config/auth')(passport);
     app.set('view engine', 'handlebars');
     // mongoose
         mongoose.Promise = global.Promise;
-        mongoose.connect('mongodb://localhost/blogapp').then(() =>{
+        mongoose.connect(db.mongoURI).then(() =>{
         console.log('Conectado ao mongo');
     }).catch((err) =>{
         console.log('Erro ao se conectar: ' + err);
@@ -124,7 +125,8 @@ app.get("/categorias/:slug",(req,res) =>{
 
    
 //Outros...
-const PORT = 8081;
-app.listen(PORT, () =>{
-    console.log('Servidor rodando na porta ' + PORT);
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Servidor rodando");
 });
