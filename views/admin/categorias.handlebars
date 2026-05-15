@@ -8,11 +8,15 @@
         <h3>{{nome}}</h3>
         <small>slug: {{slug}}</small><br>
         <small>Data de criação: {{formatDate data}}</small><br><br>
-        <a href="/admin/categorias/edit/{{_id}}"><button class="btn btn-success">Editar categoria</button></a>
-        <form action="/admin/categorias/deletar" method="POST">
-            <input type="hidden" name="id" value="{{_id}}">
-            <button type="submit" class="btn btn-danger mt-4">Deletar categoria</button>
-        </form>
+        {{#if ../user}}
+            {{#or (eq ../user._id this.autor) (eq ../user.eAdmin 1)}}
+                <a href="/admin/categorias/edit/{{_id}}"><button class="btn btn-success">Editar categoria</button></a>
+                <form action="/admin/categorias/deletar" method="POST">
+                    <input type="hidden" name="id" value="{{_id}}">
+                    <button type="submit" class="btn btn-danger mt-4">Deletar categoria</button>
+                </form>
+            {{/or}}
+        {{/if}}
     </div>
 </div>
 {{else}}

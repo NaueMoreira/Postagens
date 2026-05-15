@@ -23,6 +23,11 @@ const Postagens = new Schema({
     ref: "categorias",
     required: true
     },
+    autor:{
+        type: Schema.Types.ObjectId,
+        ref: "usuarios",
+        required: true
+    },
     data:{
         type: Date,
         default: Date.now

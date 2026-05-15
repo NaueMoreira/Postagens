@@ -9,8 +9,12 @@
         <p> Descrição:{{descricao}}</p>
         <small>Criado em: {{data}}</small><br>
         <small>Categoria: {{categoria.nome}}</small><br><br>
-        <a href="/admin/postagens/edit/{{_id}}"><button class="btn btn-primary">Editar postagem</button></a>
-        <a href="/admin/postagens/deletar/{{_id}}"><button class="btn btn-danger">Excluir postagem</button></a>
+        {{#if ../user}}
+            {{#or (eq ../user._id this.autor) (eq ../user.eAdmin 1)}}
+                <a href="/admin/postagens/edit/{{_id}}"><button class="btn btn-primary">Editar postagem</button></a>
+                <a href="/admin/postagens/deletar/{{_id}}"><button class="btn btn-danger">Excluir postagem</button></a>
+            {{/or}}
+        {{/if}}
     </div>
 </div>
 {{else}}

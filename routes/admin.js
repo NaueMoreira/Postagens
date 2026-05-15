@@ -7,6 +7,7 @@ require('../models/Postagens');
 const Postagem = mongoose.model('postagens');
 const { eAdmin } = require('../helpers/eAdmin');
 const { eAutenticado } = require('../helpers/eAutenticado');
+const { eAutorOuAdmin } = require('../helpers/eAutorOuAdmin');
 
 // Definições de rotas 
 
@@ -52,7 +53,8 @@ router.post("/categorias/nova", eAutenticado,(req,res) =>{
     }else{
         const novaCategoria = {
         nome: req.body.nome,
-        slug: req.body.slug
+        slug: req.body.slug,
+        autor: req.user._id
     };
     new Categoria(novaCategoria).save().then(() =>{
         req.flash("success_msg", "categoria criada com sucesso!");
@@ -66,7 +68,7 @@ router.post("/categorias/nova", eAutenticado,(req,res) =>{
 });
 
 //rota de edição de categoria
-router.get('/categorias/edit/:id', eAutenticado,(req, res) =>{
+router.get('/categorias/edit/:id', eAutorOuAdmin,(req, res) =>{
     Categoria.findOne({_id: req.params.id}).lean().then((categoria) => {
         res.render('admin/editcategorias', {categoria: categoria});
     }).catch((err) =>{
@@ -78,7 +80,7 @@ router.get('/categorias/edit/:id', eAutenticado,(req, res) =>{
 
 
 //rota de atualização de categoria
-router.post('/categorias/edit', eAutenticado,(req, res) => {
+router.post('/categorias/edit', eAutorOuAdmin,(req, res) => {
   // validação (mantém seu código de validação)
   Categoria.findById(req.body.id).then(categoria => {
     if(!categoria){
@@ -97,7 +99,7 @@ router.post('/categorias/edit', eAutenticado,(req, res) => {
   });
 });
 
-router.post('/categorias/deletar', eAutenticado,(req, res) => {
+router.post('/categorias/deletar', eAutorOuAdmin,(req, res) => {
     // garante que deletamos pelo _id corretamente
     Categoria.findByIdAndDelete(req.body.id).then(() => {
         req.flash('success_msg', 'Categoria deletada com sucesso!');
@@ -148,7 +150,8 @@ router.post('/postagens/new', eAutenticado,(req,res) =>{
             slug: req.body.slug,
             descricao: req.body.descricao,
             conteudo: req.body.conteudo,
-            categoria: req.body.categoria && req.body.categoria !== "0" ? req.body.categoria : null
+            categoria: req.body.categoria && req.body.categoria !== "0" ? req.body.categoria : null,
+            autor: req.user._id
         }
         new Postagem(novaPostagem).save().then(() =>{
             req.flash("success_msg", "Postagem criada com sucesso!");
@@ -160,7 +163,7 @@ router.post('/postagens/new', eAutenticado,(req,res) =>{
     }
 })
 
-router.get('/postagens/edit/:id', eAutenticado,(req, res) =>{
+router.get('/postagens/edit/:id', eAutorOuAdmin,(req, res) =>{
 
 Postagem.findOne({_id: req.params.id}).lean().then((postagem) => {
 
@@ -178,7 +181,7 @@ Postagem.findOne({_id: req.params.id}).lean().then((postagem) => {
 
 });
 
-router.post('/postagens/edit', eAutenticado,(req, res) => {
+router.post('/postagens/edit', eAutorOuAdmin,(req, res) => {
     Postagem.findById(req.body.id).then((postagem) => {
         if(!postagem){
             req.flash('error_msg', 'Postagem não encontrada');
@@ -203,7 +206,7 @@ router.post('/postagens/edit', eAutenticado,(req, res) => {
     })
 });
 
-router.get("/postagens/deletar/:id", eAutenticado,(req,res) =>{
+router.get("/postagens/deletar/:id", eAutorOuAdmin,(req,res) =>{
 
     Postagem.deleteOne({_id: req.params.id}).lean().then( () => {
         req.flash("success_msg", "Postagem deletada com sucesso!");
