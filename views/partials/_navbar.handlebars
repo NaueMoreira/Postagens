@@ -13,10 +13,21 @@
           <a class="nav-link" href="/categorias">Categorias</a>
         </li>
         {{#if user}}
-  <li class="nav-item">
-          <a class="nav-link "href="/usuarios/logout">Sair</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Administração
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+            <li><a class="dropdown-item" href="/admin/postagens">Gerenciar Postagens</a></li>
+            <li><a class="dropdown-item" href="/admin/categorias">Gerenciar Categorias</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/admin/postagens/add">+ Nova Postagem</a></li>
+            <li><a class="dropdown-item" href="/admin/categorias/add">+ Nova Categoria</a></li>
+          </ul>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="/usuarios/logout">Sair</a>
+        </li>
         {{else}}
         <li class="nav-item">
           <a class="nav-link "href="/usuarios/login">Login</a>

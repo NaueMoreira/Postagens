@@ -2,8 +2,17 @@
   <div class="p-5 bg-light rounded-3">
     <h1 class="display-5 fw-bold">Bem-vindo ao Blog do node </h1>
     <p class="fs-4">Este é um layout estilo Jumbotron no Bootstrap 5</p>
-    <a href="/registros" class="btn btn-primary btn-lg">Crie uma conta </a>
-    <a href="/admin/postagens/add" class="btn btn-primary btn-lg">Criar postagem</a>
+    {{#if user}}
+    <div class="mt-4">
+      <h5>🚀 Painel de Administração</h5>
+      <a href="/admin/postagens/add" class="btn btn-success btn-lg me-2">+ Nova Postagem</a>
+      <a href="/admin/categorias/add" class="btn btn-info btn-lg me-2">+ Nova Categoria</a>
+      <a href="/admin/postagens" class="btn btn-warning btn-lg me-2">Gerenciar Postagens</a>
+      <a href="/admin/categorias" class="btn btn-secondary btn-lg">Gerenciar Categorias</a>
+    </div>
+    {{else}}
+    <a href="/usuarios/registros" class="btn btn-primary btn-lg">Crie uma conta</a>
+    {{/if}}
   </div>
 </div>
 <hr>
