@@ -28,11 +28,11 @@ router.get('/categorias', eAdmin,(req,res) =>{
     
 })
 
-router.get("/categorias/add", eAdmin,(req,res) =>{
+router.get("/categorias/add", eAutenticado,(req,res) =>{
     res.render("admin/addcategorias");
 });
 
-router.post("/categorias/nova", eAdmin,(req,res) =>{
+router.post("/categorias/nova", eAutenticado,(req,res) =>{
     let erros = [];
 
     if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
@@ -56,10 +56,10 @@ router.post("/categorias/nova", eAdmin,(req,res) =>{
     };
     new Categoria(novaCategoria).save().then(() =>{
         req.flash("success_msg", "categoria criada com sucesso!");
-        res.redirect("/admin/categorias");
+        res.redirect("/categorias");
     }).catch((err) =>{
         req.flash("error_msg", "Houve um erro ao salvar a categoria, tente novamente!");
-        res.redirect("/admin");
+        res.redirect("/categorias/add");
     });
     }
 
