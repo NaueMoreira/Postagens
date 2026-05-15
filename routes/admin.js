@@ -6,6 +6,7 @@ const Categoria = mongoose.model('categorias');
 require('../models/Postagens');
 const Postagem = mongoose.model('postagens');
 const { eAdmin } = require('../helpers/eAdmin');
+const { eAutenticado } = require('../helpers/eAutenticado');
 
 // Definições de rotas 
 
@@ -117,38 +118,44 @@ router.get('/postagens', eAdmin,(req,res) =>{
     });
 });
 
-router.get('/postagens/add',eAdmin, (req,res) =>{
+router.get('/postagens/add',eAutenticado, (req,res) =>{
     Categoria.find().lean().then((categorias) => {
         res.render("admin/addpostagens", {categorias: categorias});
     }).catch((err) => {
         req.flash("error_msg", "Houve um erro ao carregar o formulário");
-        res.redirect("/admin");
+        res.redirect("/");
     });
 });
 
-router.post('/postagens/new', eAdmin,(req,res) =>{
+router.post('/postagens/new', eAutenticado,(req,res) =>{
     let erros = [];
 
-    if(req.body.categoria == "0"){
-        erros.push({texto: "Categoria inválida, registre uma categoria"});
+    if(!req.body.titulo || req.body.titulo.trim() === ""){
+        erros.push({texto: "Título inválido"});
+    }
+
+    if(!req.body.slug || req.body.slug.trim() === ""){
+        erros.push({texto: "Slug inválido"});
     }
 
     if(erros.length > 0){
-        res.render("admin/addpostagens", {erros: erros});
+        Categoria.find().lean().then((categorias) => {
+            res.render("admin/addpostagens", {erros: erros, categorias: categorias});
+        });
     }else{
         const novaPostagem = {
             titulo: req.body.titulo,
             slug: req.body.slug,
             descricao: req.body.descricao,
             conteudo: req.body.conteudo,
-            categoria: req.body.categoria
+            categoria: req.body.categoria && req.body.categoria !== "0" ? req.body.categoria : null
         }
         new Postagem(novaPostagem).save().then(() =>{
             req.flash("success_msg", "Postagem criada com sucesso!");
-            res.redirect("/admin/postagens");
+            res.redirect("/");
         }).catch((err) =>{
             req.flash("error_msg", "Houve um erro durante o salvamento da postagem");
-            res.redirect("/admin/postagens");
+            res.redirect("/admin/postagens/add");
         });
     }
 })

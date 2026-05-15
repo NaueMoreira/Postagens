@@ -15,12 +15,11 @@
             <input type="text" name="descricao" class="form-control" required>
             <label for="conteudo">Conteúdo:</label>
             <textarea name="conteudo" class="form-control"></textarea>
-            <label for="categoria">Categoria:</label>
+            <label for="categoria">Categoria (Opcional):</label>
             <select name="categoria" class="form-control">
+                <option value="0">Sem categoria</option>
                 {{#each categorias}}
                     <option value="{{_id}}">{{nome}}</option>
-                    {{else}}
-                    <option value="0">Nenhuma categoria</option>
                 {{/each}}
             </select>
             <button class="btn btn-success mt-3" type="submit">Criar postagem</button>
