@@ -1,12 +1,14 @@
+const mongoose = require('mongoose');
+require('../models/Categoria');
+require('../models/Postagens');
+
 module.exports = {
     eAutorOuAdmin: function (req, res, next) {
         if (req.isAuthenticated()) {
-            // Se for admin, permite
             if (req.user.eAdmin == 1) {
                 return next();
             }
 
-            // Verifica se é o autor baseado na URL ou body
             const userId = req.user._id;
             const itemId = req.params.id || req.body.id;
 
@@ -15,11 +17,8 @@ module.exports = {
                 return res.redirect("/");
             }
 
-            // Determina se é postagem ou categoria baseado na URL
             const isPostagem = req.originalUrl.includes('/postagens/');
-            const Model = isPostagem ?
-                require('../models/Postagens') :
-                require('../models/Categoria');
+            const Model = isPostagem ? mongoose.model('postagens') : mongoose.model('categorias');
 
             Model.findById(itemId).then(item => {
                 if (!item) {
@@ -27,7 +26,6 @@ module.exports = {
                     return res.redirect("/");
                 }
 
-                // Verifica se o usuário logado é o autor
                 if (item.autor && item.autor.toString() === userId.toString()) {
                     return next();
                 } else {

@@ -45,7 +45,12 @@ const db = require('./config/db');
     app.use(bodyparser.json());
     // handlebars
     app.engine('handlebars', engine({defaultLayout: 'main',helpers:{
-        formatDate: (d) => new Date(d).toLocaleDateString('pt-BR')
+        formatDate: (d) => new Date(d).toLocaleDateString('pt-BR'),
+        eq: (a, b) => a && b && a.toString() === b.toString(),
+        or: function() {
+            const args = Array.prototype.slice.call(arguments, 0, -1);
+            return args.some(Boolean);
+        }
     }
     }));
     app.set('view engine', 'handlebars');
