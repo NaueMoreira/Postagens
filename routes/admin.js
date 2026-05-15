@@ -18,12 +18,12 @@ router.get('/posts', (req,res) =>{
     res.send('Pagina de posts');
 })
 
-router.get('/categorias', eAdmin,(req,res) =>{
+router.get('/categorias', eAutenticado,(req,res) =>{
     Categoria.find().sort({data: "desc"}).lean().then((categorias) =>{
         res.render("admin/categorias", {categorias: categorias});
     }).catch((err) =>{
         req.flash("error_msg", "Houve um erro ao listar as categorias");
-        res.redirect("/admin");
+        res.redirect("/");
     })
     
 })
@@ -66,7 +66,7 @@ router.post("/categorias/nova", eAutenticado,(req,res) =>{
 });
 
 //rota de edição de categoria
-router.get('/categorias/edit/:id', eAdmin,(req, res) =>{
+router.get('/categorias/edit/:id', eAutenticado,(req, res) =>{
     Categoria.findOne({_id: req.params.id}).lean().then((categoria) => {
         res.render('admin/editcategorias', {categoria: categoria});
     }).catch((err) =>{
@@ -78,7 +78,7 @@ router.get('/categorias/edit/:id', eAdmin,(req, res) =>{
 
 
 //rota de atualização de categoria
-router.post('/categorias/edit', eAdmin,(req, res) => {
+router.post('/categorias/edit', eAutenticado,(req, res) => {
   // validação (mantém seu código de validação)
   Categoria.findById(req.body.id).then(categoria => {
     if(!categoria){
@@ -97,7 +97,7 @@ router.post('/categorias/edit', eAdmin,(req, res) => {
   });
 });
 
-router.post('/categorias/deletar', eAdmin,(req, res) => {
+router.post('/categorias/deletar', eAutenticado,(req, res) => {
     // garante que deletamos pelo _id corretamente
     Categoria.findByIdAndDelete(req.body.id).then(() => {
         req.flash('success_msg', 'Categoria deletada com sucesso!');
@@ -108,13 +108,13 @@ router.post('/categorias/deletar', eAdmin,(req, res) => {
     });
 });
 
-router.get('/postagens', eAdmin,(req,res) =>{
+router.get('/postagens', eAutenticado,(req,res) =>{
 
     Postagem.find().populate("categoria").sort({data: "desc"}).lean().then((postagens) =>{
         res.render("admin/postagens", {postagens: postagens});
     }).catch((err) =>{
         req.flash("error_msg", "Houve um erro ao listar as postagens");
-        res.redirect("/admin");
+        res.redirect("/");
     });
 });
 
@@ -160,7 +160,7 @@ router.post('/postagens/new', eAutenticado,(req,res) =>{
     }
 })
 
-router.get('/postagens/edit/:id', eAdmin,(req, res) =>{
+router.get('/postagens/edit/:id', eAutenticado,(req, res) =>{
 
 Postagem.findOne({_id: req.params.id}).lean().then((postagem) => {
 
@@ -178,7 +178,7 @@ Postagem.findOne({_id: req.params.id}).lean().then((postagem) => {
 
 });
 
-router.post('/postagens/edit', eAdmin,(req, res) => {
+router.post('/postagens/edit', eAutenticado,(req, res) => {
     Postagem.findById(req.body.id).then((postagem) => {
         if(!postagem){
             req.flash('error_msg', 'Postagem não encontrada');
@@ -188,7 +188,7 @@ router.post('/postagens/edit', eAdmin,(req, res) => {
         postagem.slug = req.body.slug;
         postagem.descricao = req.body.descricao;
         postagem.conteudo = req.body.conteudo;
-        postagem.categoria = req.body.categoria;
+        postagem.categoria = req.body.categoria && req.body.categoria !== "0" ? req.body.categoria : null;
         postagem.save().then(() => {
             req.flash('success_msg', 'Postagem editada com sucesso!');
             res.redirect('/admin/postagens');
@@ -203,7 +203,7 @@ router.post('/postagens/edit', eAdmin,(req, res) => {
     })
 });
 
-router.get("/postagens/deletar/:id", eAdmin,(req,res) =>{
+router.get("/postagens/deletar/:id", eAutenticado,(req,res) =>{
 
     Postagem.deleteOne({_id: req.params.id}).lean().then( () => {
         req.flash("success_msg", "Postagem deletada com sucesso!");
