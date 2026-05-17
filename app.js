@@ -49,7 +49,11 @@ const db = require('./config/db');
         eq: (a, b) => a && b && a.toString() === b.toString(),
         or: function() {
             const args = Array.prototype.slice.call(arguments, 0, -1);
-            return args.some(Boolean);
+            const options = arguments[arguments.length - 1];
+            if (args.some(Boolean)) {
+                return options.fn(this);
+            }
+            return options.inverse(this);
         }
     }
     }));
