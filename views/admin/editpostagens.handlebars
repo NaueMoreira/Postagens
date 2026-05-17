@@ -18,11 +18,13 @@
             <textarea name="conteudo" class="form-control">{{postagem.conteudo}}</textarea>
             <label for="categoria">Categoria:</label>
             <select name="categoria" class="form-control">
-                {{#each categorias}}
-                    <option value="{{_id}}">{{nome}}</option>
-                    {{else}}
+                {{#if categorias}}
+                    {{#each categorias}}
+                        <option value="{{_id}}" {{#if (eq ../postagem.categoria _id)}}selected{{/if}}>{{nome}}</option>
+                    {{/each}}
+                {{else}}
                     <option value="0">Nenhuma categoria</option>
-                {{/each}}
+                {{/if}}
             </select>
             <button class="btn btn-success mt-3" type="submit">Editar postagem</button>
         </form>

@@ -196,12 +196,14 @@ router.post('/postagens/edit', eAutorOuAdmin,(req, res) => {
             req.flash('success_msg', 'Postagem editada com sucesso!');
             res.redirect('/admin/postagens');
         }).catch((err) => {
-            req.flash('error_msg', 'Erro interno');
+            console.error('Erro ao salvar postagem editada:', err);
+            req.flash('error_msg', 'Erro interno ao salvar: ' + (err.message || 'verifique o console')); 
             res.redirect('/admin/postagens');
         });
     }).catch((err) => {
         console.log(err);
-        req.flash('error_msg', 'Houve um erro ao salvar a edição da postagem');
+        console.error('Erro ao buscar postagem para editar:', err);
+        req.flash('error_msg', 'Houve um erro ao salvar a edição da postagem: ' + (err.message || 'verifique o console'));
         res.redirect('/admin/postagens');
     })
 });
