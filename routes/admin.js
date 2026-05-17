@@ -192,6 +192,10 @@ router.post('/postagens/edit', eAutorOuAdmin,(req, res) => {
         postagem.descricao = req.body.descricao;
         postagem.conteudo = req.body.conteudo;
         postagem.categoria = req.body.categoria && req.body.categoria !== "0" ? req.body.categoria : null;
+        // Garantir que o autor não seja removido/undefined ao salvar
+        if(!postagem.autor) {
+            postagem.autor = req.user._id;
+        }
         postagem.save().then(() => {
             req.flash('success_msg', 'Postagem editada com sucesso!');
             res.redirect('/admin/postagens');
